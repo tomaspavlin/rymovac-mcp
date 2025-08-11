@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(npm run build:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(rm:*)"
+    ],
+    "deny": []
+  }
+}
