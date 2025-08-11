@@ -4,6 +4,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { RymovacAPI } from "./rymovac-api.js";
+import { formatRhymesResult } from "./formatters.js";
 
 const server = new McpServer(
   {
@@ -31,25 +32,13 @@ server.registerTool(
   async ({ word, count = 10, from = 0 }) => {
     try {
       const result = await RymovacAPI.findRhymes({ word, count, from });
-      
-      const formattedResult = {
-        original_word: result.word,
-        total_rhymes_available: result.total_min,
-        has_more_rhymes: result.is_more_rhymes,
-        returned_count: result.arr.length,
-        rhymes: result.arr.map(rhyme => ({
-          word: rhyme.word,
-          rating: rhyme.rating,
-          count: rhyme.count,
-          highlighted: rhyme.highlight
-        }))
-      };
+      const output = formatRhymesResult(result);
 
       return {
         content: [
           {
             type: "text",
-            text: JSON.stringify(formattedResult, null, 2)
+            text: output
           }
         ]
       };
