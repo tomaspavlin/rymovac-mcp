@@ -7,6 +7,7 @@ A Model Context Protocol (MCP) server that provides access to Czech rhyme findin
 ```bash
 npm install
 npm run build
+npm run start
 ```
 
 ## MCP Tool
@@ -27,13 +28,14 @@ Find Czech rhymes for a given word or phrase.
 ### Scripts
 - `npm run build` - Build TypeScript to JavaScript
 - `npm start` - Start the production server
+- `npm run inspect` - Start and testing with MCP Inspector
 - `npm run watch` - Watch mode for TypeScript compilation only
 
 ## Testing
 
 ### Testing with Claude Desktop
 
-this server to your Claude Desktop configuration:
+Add this server to your Claude Desktop configuration:
 
 ```json
 {
@@ -48,13 +50,11 @@ this server to your Claude Desktop configuration:
 
 ### Testing with MCP Inspector
 
-You can test the MCP server using the official MCP Inspector:
+You can test the MCP server using the official MCP Inspector (https://modelcontextprotocol.io/legacy/tools/inspector):
 
 ```bash
-npx @modelcontextprotocol/inspector node dist/index.js
+npm run inspect
 ```
-
-For more information about the MCP Inspector, visit: https://modelcontextprotocol.io/legacy/tools/inspector
 
 ## License
 
