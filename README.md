@@ -30,10 +30,6 @@ Find Czech rhymes for a given word or phrase.
 - `npm run watch` - Watch mode for TypeScript compilation
 - `npm start` - Start the production server
 
-## License
-
-MIT
-
 ## Testing
 
 ### Testing with Claude Desktop
@@ -60,3 +56,7 @@ npx @modelcontextprotocol/inspector node dist/index.js
 ```
 
 For more information about the MCP Inspector, visit: https://modelcontextprotocol.io/legacy/tools/inspector
+
+## License
+
+MIT
