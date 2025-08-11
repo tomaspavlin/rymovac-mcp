@@ -26,9 +26,8 @@ Find Czech rhymes for a given word or phrase.
 
 ### Scripts
 - `npm run build` - Build TypeScript to JavaScript
-- `npm run dev` - Development mode with auto-restart
-- `npm run watch` - Watch mode for TypeScript compilation
 - `npm start` - Start the production server
+- `npm run watch` - Watch mode for TypeScript compilation only
 
 ## Testing
 
