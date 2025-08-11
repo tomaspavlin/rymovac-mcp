@@ -14,6 +14,7 @@ const server = new McpServer(
   {
     capabilities: {
       tools: {},
+      prompts: {},
     },
   }
 );
@@ -54,6 +55,66 @@ server.registerTool(
       };
     }
   }
+);
+
+server.registerPrompt(
+  "czech-poem-guide",
+  {
+    title: "Czech Poetry Writing Guide",
+    description: "Instructions for writing Czech poems using the Rymovac MCP server to find rhymes",
+    argsSchema: {
+      theme: z.string().optional().describe("Optional theme or topic for the poem"),
+      verses: z.string().optional().describe("Number of verses/stanzas in the poem (2-20, default: 4)")
+    }
+  },
+  ({ theme, verses = "4" }) => ({
+    messages: [{
+      role: "user", 
+      content: {
+        type: "text",
+        text: `# Czech Poetry Writing Guide
+
+You are helping to write Czech poems using the rymovac MCP server. Follow these guidelines:
+
+## Poem Structure:
+- Write ${verses} verses (stanzas)
+- Each verse should have 4 lines
+- Number each line: 1., 2., 3., 4., 5., etc.
+- Each line should be on a separate line in your response
+
+## Using the Rymovac Tool:
+1. **Find rhymes for line endings**: Use the find_rhymes tool with the last word or phrase of each line
+2. **Word parameter**: You can search for:
+   - Single words: "slovo" 
+   - Phrases/verse endings: "krásné slovo", "v noci temné"
+   - The tool finds words that rhyme with the ending
+3. **Rhyme schemes**: Common patterns are AABA, ABAB, or AABB
+
+## Writing Process:
+1. Start with your first line${theme ? ` about "${theme}"` : ""}
+2. Use find_rhymes to find words that rhyme with the ending
+3. Write the second line using a rhyming word
+4. Continue building verses with consistent rhyme scheme
+5. Ensure the poem flows naturally and makes sense
+
+## Example workflow:
+1. Write: "1. V zahradě roste krásné slovo"
+2. Use find_rhymes with "slovo" 
+3. Choose a rhyme like "olovo" for line 3
+4. Write: "3. Těžké jako olovo"
+
+## Tips:
+- Czech poetry often uses metaphors and imagery
+- Pay attention to syllable count for rhythm
+- Use the rating from rhymes to pick the best matches
+- Don't force rhymes - natural flow is important
+
+${theme ? `\n## Your Task:\nWrite a Czech poem about "${theme}" following the guidelines above.` : "\n## Your Task:\nWrite a Czech poem following the guidelines above."}
+
+Begin by writing your first line, then use the find_rhymes tool to help craft the rest of the poem.`
+      }
+    }]
+  })
 );
 
 async function main() {

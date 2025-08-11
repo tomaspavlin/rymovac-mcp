@@ -10,11 +10,11 @@ npm run build
 npm run start
 ```
 
-## MCP Tool
+## MCP Resources
 
-The server provides a single tool:
+The server provides:
 
-### `find_rhymes`
+### Tool: `find_rhymes`
 
 Find Czech rhymes for a given word or phrase.
 
@@ -22,6 +22,14 @@ Find Czech rhymes for a given word or phrase.
 - `word` (required): The word or phrase to find rhymes for
 - `count` (optional): Number of rhymes to return (1-50, default: 10)
 - `from` (optional): Starting index for pagination (default: 0)
+
+### Prompt: `czech-poem-guide` (experimental)
+
+A comprehensive guide for writing Czech poems using the rhyme finder.
+
+**Parameters:**
+- `theme` (optional): Theme or topic for the poem
+- `verses` (optional): Number of verses/stanzas (default: 4)
 
 ## Development
 
