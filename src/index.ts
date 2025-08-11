@@ -22,11 +22,11 @@ server.registerTool(
   "find_rhymes",
   {
     title: "Find Czech Rhymes",
-    description: "Find Czech rhymes for a given word or phrase using the rymovac.cz API",
+    description: "Find Czech rhymes for a given word or phrase using the rymovac.cz API.",
     inputSchema: {
-      word: z.string().min(1, "Word cannot be empty"),
-      count: z.number().min(1).max(50).default(10),
-      from: z.number().min(0).default(0)
+      word: z.string().min(1, "Word cannot be empty").describe("The Czech word or phrase to find rhymes for. Can be a single word like 'slovo' or a phrase/verse/poem row like 'Tohle je krásné slovo'. The API will find words that rhyme with the ending."),
+      count: z.number().min(1).max(50).default(10).describe("Maximum number of rhymes to return (1-50). Default is 10. Set to 10 if user does not tell otherwise."),
+      from: z.number().min(0).default(0).describe("Starting index for pagination (0-based). Use 0 for first page, 10 for second page (if count=10), etc. Useful when there are many rhymes available and you want to see additional results.")
     }
   },
   async ({ word, count = 10, from = 0 }) => {
