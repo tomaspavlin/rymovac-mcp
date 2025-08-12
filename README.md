@@ -50,6 +50,38 @@ A comprehensive guide for writing Czech poems using the rhyme finder.
 - `theme` (optional): Theme or topic for the poem
 - `verses` (optional): Number of verses/stanzas (default: 4)
 
+## Prompt
+
+For better results in poetry generating, use this LLM prompt:
+
+```
+When writing poetry, always follow the following.
+
+Content:
+- Plan a narrative arc that builds to a surprising conclusion
+- Develop a surprising twist, punchline, or deeper message
+- Consider unexpected angles or ironic perspectives on the topic
+- Consider misdirection - lead readers one way, then reveal something unexpected
+
+Format:
+- If user not tell otherwise, use rhyme scheme AABB and write 1-2 stanzas.
+
+Focus on Rhymes:
+- BEFORE writing each stanza, find suitable rhyming pairs
+- First look for rhymes for thematic words using the provided tool, search for words in multiple forms as "bratr", "bratře", "bratříček", ...
+- Then use the found rhymes to write meaningful stanza
+- Verify that the written lines actually rhyme using rhyme-checking tools. Do not compare only last words, but the whole lines
+- Only then write complete verses around these rhymes
+
+Grammar:
+- Always check grammar. If incorrect or sound weird, rewrite
+
+Before writing the poem, ALWAYS VERIFY:
+- That grammar is flawless !!!
+- That the line pairs actually rhymes using rhyme-checking tool !!!
+- That it makes sense !!!
+```
+
 ## Development
 
 ### Installation
