@@ -1,13 +1,20 @@
 # Rymovac MCP Server
 
-MCP that makes LLMs to write poetry that actually rhymes. This Model Context Protocol server provides tools for Czech rhymes using the [rymovac.cz](https://rymovac.cz/) API.
+MCP server that makes LLMs write poetry that actually rhymes. This Model Context Protocol server provides tools for Czech rhymes using the [rymovac.cz](https://rymovac.cz/) API.
 
-## Installation
+## Usage
 
-```bash
-npm install
-npm run build
-npm run start
+Add this server to your Claude Desktop/Cursor configuration:
+
+```json
+{
+  "mcpServers": {
+    "rymovac": {
+      "command": "npx",
+      "args": ["-y", "@rymovac/mcp"]
+    }
+  }
+}
 ```
 
 ## MCP Resources
@@ -33,6 +40,14 @@ A comprehensive guide for writing Czech poems using the rhyme finder.
 
 ## Development
 
+### Installation
+
+```bash
+npm install
+npm run build
+npm run start
+```
+
 ### Scripts
 - `npm run build` - Build TypeScript to JavaScript
 - `npm start` - Start the production server
@@ -43,7 +58,7 @@ A comprehensive guide for writing Czech poems using the rhyme finder.
 
 ### Testing with Claude Desktop
 
-Add this server to your Claude Desktop configuration:
+Add this to configuration:
 
 ```json
 {
@@ -64,6 +79,11 @@ You can test the MCP server using the official MCP Inspector (https://modelconte
 npm run inspect
 ```
 
+### Publishing as NPM package
+
+1. Update version in package.json
+2. `npm publish`
+
 ## License
 
-MIT
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

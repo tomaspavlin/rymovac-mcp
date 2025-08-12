@@ -1,6 +1,6 @@
 {
   "name": "@rymovac/mcp",
-  "version": "1.0.3",
+  "version": "1.0.7",
   "type": "module",
   "description": "MCP server for finding Czech rhymes using rymovac.cz API",
   "keywords": [
@@ -10,11 +10,11 @@
     "poetry",
     "rymovac"
   ],
-  "author": "Tomas Pavlin - Rymovac (rymovac.cz)",
+  "author": "Tomas Pavlin - Rymovac (https://rymovac.cz)",
   "license": "MIT",
   "main": "dist/index.js",
   "bin": {
-    "rymovac-mcp": "dist/index.js"
+    "rymovac-mcp-server": "dist/index.js"
   },
   "files": [
     "dist",
@@ -32,7 +32,7 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && chmod +x dist/*.js",
     "start": "node dist/index.js",
     "inspect": "npm run build && npx @modelcontextprotocol/inspector node dist/index.js",
     "watch": "tsc --watch",
