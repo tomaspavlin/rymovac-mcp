@@ -32,6 +32,14 @@ Find Czech rhymes for a given word or phrase.
 - `count` (optional): Number of rhymes to return (1-50, default: 10)
 - `from` (optional): Starting index for pagination (default: 0)
 
+#### `check_rhyme`
+
+Check if two Czech words, phrases, verses, or poem rows rhyme.
+
+**Parameters:**
+- `word1` (required): The first Czech word, phrase, verse, or poem row to compare
+- `word2` (required): The second Czech word, phrase, verse, or poem row to compare
+
 ### Prompts
 
 #### `czech-poem-guide` (experimental)

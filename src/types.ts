@@ -21,3 +21,16 @@ export interface FindRhymesArgs {
   count: number;
   from: number;
 }
+
+export interface IsRhymeResponse {
+  precision: number;
+  is_rhyme: boolean;
+  log: {
+    full_time: number;
+  };
+}
+
+export interface CheckRhymeArgs {
+  word1: string;
+  word2: string;
+}

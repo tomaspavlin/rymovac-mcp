@@ -1,5 +1,5 @@
 import axios from "axios";
-import { RymovacResponse, FindRhymesArgs } from "./types.js";
+import { RymovacResponse, FindRhymesArgs, IsRhymeResponse, CheckRhymeArgs } from "./types.js";
 
 export class RymovacAPI {
   private static readonly BASE_URL = "https://rymovac.cz/api/v1";
@@ -17,6 +17,27 @@ export class RymovacAPI {
 
     try {
       const response = await axios.get<RymovacResponse>(url, { params });
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(`API request failed: ${error.response?.status} - ${error.response?.statusText}`);
+      }
+      throw new Error(`Unexpected error: ${error}`);
+    }
+  }
+
+  static async checkRhyme(args: CheckRhymeArgs): Promise<IsRhymeResponse> {
+    const { word1, word2 } = args;
+    
+    const url = `${this.BASE_URL}/is-rhyme`;
+    const params = {
+      word1: word1,
+      word2: word2,
+      precision: 0
+    };
+
+    try {
+      const response = await axios.get<IsRhymeResponse>(url, { params });
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {

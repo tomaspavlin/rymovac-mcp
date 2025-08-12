@@ -57,6 +57,45 @@ server.registerTool(
   }
 );
 
+server.registerTool(
+  "check_rhyme",
+  {
+    title: "Check if Words Rhyme",
+    description: "Check if two Czech words, phrases, verses, or poem rows rhyme. It uses the rymovac.cz API.",
+    inputSchema: {
+      word1: z.string().min(1, "First word/phrase cannot be empty").describe("The first Czech word, phrase, verse, or poem row to compare. Can be a single word like 'kocka' or a whole verse/phrase like 'V noci temné'."),
+      word2: z.string().min(1, "Second word/phrase cannot be empty").describe("The second Czech word, phrase, verse, or poem row to compare. Can be a single word like 'ocka' or a whole verse/phrase like 'pod hvězdami jemné'.")
+    }
+  },
+  async ({ word1, word2 }) => {
+    try {
+      const result = await RymovacAPI.checkRhyme({ word1, word2 });
+      
+      const rhymeStatus = result.is_rhyme ? "✓ DO RHYME" : "✗ DO NOT RHYME";
+      const output = `The following phrases ${rhymeStatus}:\n- "${word1}"\n- "${word2}"`;
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: output
+          }
+        ]
+      };
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: error instanceof Error ? error.message : String(error)
+          }
+        ],
+        isError: true
+      };
+    }
+  }
+);
+
 server.registerPrompt(
   "czech-poem-guide",
   {
