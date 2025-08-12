@@ -66,3 +66,6 @@ Thumbs.db
 # IntelliJ IDEA
 *.iml
 .idea/
+
+# Other
+.claude2/
