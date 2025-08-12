@@ -1,0 +1,5 @@
+{
+  "name": "rymovac-mcp",
+  "compatibility_date": "2025-08-12",
+  "main": "src/index.ts"
+}
