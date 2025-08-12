@@ -17,11 +17,13 @@ Add this server to your Claude Desktop/Cursor configuration:
 }
 ```
 
-## MCP Resources
+## Components
 
 The server provides:
 
-### Tool: `find_rhymes`
+### Tools
+
+#### `find_rhymes`
 
 Find Czech rhymes for a given word or phrase.
 
@@ -30,7 +32,9 @@ Find Czech rhymes for a given word or phrase.
 - `count` (optional): Number of rhymes to return (1-50, default: 10)
 - `from` (optional): Starting index for pagination (default: 0)
 
-### Prompt: `czech-poem-guide` (experimental)
+### Prompts
+
+#### `czech-poem-guide` (experimental)
 
 A comprehensive guide for writing Czech poems using the rhyme finder.
 
