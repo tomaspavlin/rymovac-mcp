@@ -1,6 +1,6 @@
 # Rymovac MCP Server
 
-A Model Context Protocol (MCP) server that provides access to Czech rhyme finding using the rymovac.cz API.
+MCP that makes LLMs to write poetry that actually rhymes. This Model Context Protocol server provides tools for Czech rhymes using the [rymovac.cz](https://rymovac.cz/) API.
 
 ## Installation
 
