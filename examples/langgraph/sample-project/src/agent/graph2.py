@@ -28,11 +28,15 @@ def chatbot(state: State):
     return {"messages": [model.invoke(state["messages"])]}
 
 
+def identity_node(state: State):
+    return state
 
-# The first argument is the unique node name
-# The second argument is the function or object that will be called whenever
-# the node is used.
+
+
+# Example input state: [{"role": "user", "content": "what is the weather in sf"}]
 graph_builder.add_node("chatbot", chatbot)
+graph_builder.add_node("identity_node", identity_node)
 graph_builder.add_edge(START, "chatbot")
-graph_builder.add_edge("chatbot", END)
+graph_builder.add_edge("chatbot", "identity_node")
+graph_builder.add_edge("identity_node", END)
 graph = graph_builder.compile()
