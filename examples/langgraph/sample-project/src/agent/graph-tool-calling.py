@@ -3,11 +3,13 @@ from typing import Annotated
 from langchain.chat_models import init_chat_model
 from langchain_tavily import TavilySearch
 from langchain_core.messages import BaseMessage, AnyMessage
+from langgraph.types import interrupt
 from typing_extensions import TypedDict
 
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode, tools_condition
+from langchain_core.tools import tool
 
 llm = init_chat_model(
     "anthropic:claude-3-7-sonnet-latest",
@@ -19,8 +21,14 @@ class State(TypedDict):
 
 graph_builder = StateGraph(State)
 
+# not working for some reason
+@tool
+def multiply(a: int, b: int) -> str:
+    """Multiply two int numbers."""
+    return str(a * b)
+
 tool = TavilySearch(max_results=2)
-tools = [tool]
+tools = [tool, multiply]
 llm_with_tools = llm.bind_tools(tools)
 
 def chatbot(state: State):
