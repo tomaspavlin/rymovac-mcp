@@ -23,9 +23,14 @@ graph_builder = StateGraph(State)
 
 # not working for some reason
 @tool
-def multiply(a: int, b: int) -> str:
-    """Multiply two int numbers."""
-    return str(a * b)
+def multiply(a: int, b: int) -> int:
+    """Multiply a and b.
+
+    Args:
+        a: first int
+        b: second int
+    """
+    return a * b
 
 tool = TavilySearch(max_results=2)
 tools = [tool, multiply]
@@ -36,7 +41,7 @@ def chatbot(state: State):
 
 graph_builder.add_node("chatbot", chatbot)
 
-tool_node = ToolNode(tools=[tool])
+tool_node = ToolNode(tools=tools)
 graph_builder.add_node("tools", tool_node)
 
 graph_builder.add_conditional_edges(
