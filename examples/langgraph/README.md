@@ -32,4 +32,5 @@ langgraph new sample-project --template new-langgraph-project-python
 # In sample-project/ run:
 # Run langgraph studio (in langsmith) for develpment, generates some api (langgraph server?)
 langgraph dev
+# TODO: learn how to run with IDE debugger
 ```

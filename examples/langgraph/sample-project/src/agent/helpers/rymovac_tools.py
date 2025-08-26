@@ -13,7 +13,7 @@ def multiply(a: int, b: int) -> int:
 
 # TODO: implement following function
 @tool
-def check_rhyme(word1, word2) -> str:
+def check_rhyme(word1: str, word2: str) -> str:
     """Checks rhyme"""
     # TODO
     return str(word1[-2:] == word2[-2:])

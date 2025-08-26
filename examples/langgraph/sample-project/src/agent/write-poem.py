@@ -5,6 +5,7 @@ from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, AIM
 from langchain_core.prompts import PromptTemplate
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
+from langgraph.prebuilt import create_react_agent
 from pydantic import BaseModel, Field
 from typing_extensions import TypedDict
 
@@ -63,16 +64,16 @@ async def make_graph():
 
     rymovac_tools = [check_rhyme]
 
-    llm_with_rymovac = llm.bind_tools(rymovac_tools)
+    rhyme_checker_agent = create_react_agent(llm, tools=rymovac_tools)
 
     def ideator(state: State):
-        system: SystemMessage = SystemMessage("You help ideate original poem. When user request poem, you do not write it but write some original story in bullet points what it will be about. Try to be funny or shocking. Write only the bullet points, nothing more.")
+        system: SystemMessage = SystemMessage("You help ideate original poem. When user request poem, you do not write it but write some original story in bullet points what it will be about. Try to be funny or shocking. Write in user requested language.")
         response: IdeatorResponse = ideator_structured_llm.invoke([system] + state["messages"]) # Should I check the type if the LLM really return it?
         return {"story": response.story, "messages": [AIMessage("Ideator: " + response.ai_message)]}
 
     def writer(state: State):
         if not state.get("feedback"):
-            system: SystemMessage = SystemMessage("When you are given idea for a poem story, you will follow it and write short 4 line poem. It should rhyme.")
+            system: SystemMessage = SystemMessage("When you are given idea for a poem story, you will follow it and write short 4 line poem. It should rhyme. Write in user requested language.")
             human: HumanMessage = HumanMessage("Write poem about the following:\n " + state["story"])
             # poem = llm.invoke("Write poem about the following:\n " + state["story"])
             response: WriterResponse = writer_structured_llm.invoke([system, human])
@@ -95,18 +96,25 @@ async def make_graph():
             reject_message = AIMessage(f"I will apply this feedback: {response.feedback}")
             return {"rejected": True, "feedback": response.feedback, "messages": [reject_message]}
 
-    def rhymes_evaluator(state: State):
-        prompt_template = PromptTemplate.from_template("Evaluate if the given poem rhymes. If it rhymes, write just message 'ok'. If it not rhymes, write what does not rhyme.  \n\n Poem:\n {poem}")
-        prompt = prompt_template.invoke({"poem": state["poem"]})
-        #response = llm_with_rymovac.invoke(prompt)
-        response = llm.invoke(prompt)
-        if response.content == "ok":
-            success_message = AIMessage(f"The poem rhymes")
-            return {"rejected": False, "feedback": "", "messages": [success_message]}
+    async def rhymes_evaluator(state: State):
+        prompt_template = PromptTemplate.from_template("Evaluate if the given poem rhymes. Be informative, no bullshit, no verbose. If it does not rhyme, write what does not rhyme.  \n\n Poem:\n {poem}")
+        prompt = await prompt_template.ainvoke({"poem": state["poem"]})
+
+        # Call llm with tool calling
+        subgraph_output = await rhyme_checker_agent.ainvoke({"messages": [HumanMessage(str(prompt))]})
+        # subgraph_output = await (await make_rhyme_checker_graph()).ainvoke({"messages": [HumanMessage(str(prompt))]})
+
+        # Convert this tool calling messages to structured output
+        # TODO: different approach is possible: https://langchain-ai.github.io/langgraph/how-tos/react-agent-structured-output/
+        # TODO: try only last messgege
+        response: EvaluatorResponse = await evaluator_structured_llm.ainvoke(subgraph_output["messages"])
+
+        if response.grade == "ok":
+            success_message = AIMessage(f"The poem rhymes.")
+            return {"rejected": False, "feedback": response.feedback, "messages": [success_message]}
         else:
-            feedback = response.content
-            reject_message = AIMessage(f"The poem not rhymes: {feedback}")
-            return {"rejected": True, "feedback": feedback, "messages": [reject_message]}
+            reject_message = AIMessage(f"The poem does not rhyme. I will apply this feedback: {response.feedback}")
+            return {"rejected": True, "feedback": response.feedback, "messages": [reject_message]}
 
     def route_evaluation(state: State):
         if state["rejected"]:
@@ -119,9 +127,6 @@ async def make_graph():
     graph_builder.add_node("evaluator1", evaluator1)
     graph_builder.add_node("rhymes_evaluator", rhymes_evaluator)
 
-    #rymovac_tools_node = ToolNode(tools=rymovac_tools, name="rymovac_tools")
-    #graph_builder.add_node("rymovac_tools", rymovac_tools_node)
-
     # Any time a tool is called, we return to the chatbot to decide the next step
     graph_builder.add_edge(START, "ideator")
     graph_builder.add_edge("ideator", "writer")
@@ -131,14 +136,6 @@ async def make_graph():
         "rejected": "writer",
         "accepted": "rhymes_evaluator"
     })
-
-    # graph_builder.add_edge("writer", "rhymes_evaluator")
-    # graph_builder.add_conditional_edges(
-    #     "rhymes_evaluator",
-    #     tools_condition,
-    #     {"tools": "rymovac_tools"}
-    # )
-    #graph_builder.add_edge("rymovac_tools", "rhymes_evaluator")
     graph_builder.add_conditional_edges("rhymes_evaluator", route_evaluation, {
         "rejected": "writer",
         "accepted": END
