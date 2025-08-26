@@ -122,10 +122,20 @@ async def make_graph():
         else:
             return "accepted"
 
+
+    async def summarizer(state: State):
+        prompt_template = PromptTemplate.from_template("Summarize to user what you have done and write the resulting poem.  \n\n Poem:\n {poem}")
+        prompt = await prompt_template.ainvoke({"poem": state["poem"]})
+
+        system: SystemMessage = SystemMessage(str(prompt))
+        result = await llm.ainvoke([system] + state["messages"])
+        return {"messages": [result]}
+
     graph_builder.add_node("ideator", ideator)
     graph_builder.add_node("writer", writer)
     graph_builder.add_node("evaluator1", evaluator1)
     graph_builder.add_node("rhymes_evaluator", rhymes_evaluator)
+    graph_builder.add_node("summarizer", summarizer)
 
     # Any time a tool is called, we return to the chatbot to decide the next step
     graph_builder.add_edge(START, "ideator")
@@ -138,8 +148,10 @@ async def make_graph():
     })
     graph_builder.add_conditional_edges("rhymes_evaluator", route_evaluation, {
         "rejected": "writer",
-        "accepted": END
+        "accepted": "summarizer"
     })
+
+    graph_builder.add_edge("summarizer", END)
 
     #graph_builder.add_edge("writer", END)
     graph = graph_builder.compile()
