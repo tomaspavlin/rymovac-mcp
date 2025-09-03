@@ -5,7 +5,7 @@
     "agent2": "./src/samples/graph2.py:graph",
     "graph-react-agent": "./src/samples/graph-react-agent.py:agent",
     "graph-tool-calling": "./src/samples/graph-tool-calling.py:graph",
-    "write-poem": "./src/agent/write-poem.py:make_graph"
+    "write-poem": "./src/agent/graph.py:make_graph"
   },
   "env": ".env",
   "image_distro": "wolfi"
