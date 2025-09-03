@@ -27,7 +27,7 @@ jupyter lab
 # Run studio (sample-project)
 ```sh
 # or without template to choose from list
-langgraph new sample-project --template new-langgraph-project-python
+# langgraph new sample-project --template new-langgraph-project-python
 
 # In sample-project/ run:
 # Run langgraph studio (in langsmith) for develpment, generates some api (langgraph server?)
