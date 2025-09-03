@@ -8,11 +8,16 @@ from agent.nodes.writer import writer
 from agent.state import State
 
 
+MAX_ITERATIONS = 5
+
 async def make_graph():
 
     graph_builder = StateGraph(State)
 
     def route_evaluation(state: State):
+        if state["iterations"] >= MAX_ITERATIONS:
+            return "accepted" # TODO: return other states
+
         if state["rejected"]:
             return "rejected"
         else:

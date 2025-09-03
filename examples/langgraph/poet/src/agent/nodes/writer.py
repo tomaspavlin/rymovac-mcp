@@ -21,20 +21,24 @@ def writer(state: State):
         "It should rhyme and be gramatically correct. "
         "Write in user requested language.")
 
+    iterations = state.get("iterations", 0) + 1
+
     # When writing for the first time
     if not state.get("feedback"):
         human: HumanMessage = HumanMessage("Write poem about the following:\n " + state["story"])
         # poem = llm.invoke("Write poem about the following:\n " + state["story"])
-        response: WriterResponse = writer_structured_llm.invoke([system, human])
+        # response: WriterResponse = writer_structured_llm.invoke([system, human])
+        response: WriterResponse = writer_structured_llm.invoke([system] + state["messages"])
         # message = AIMessage("Wrote poem draft: " + response.justification)
         message = AIMessage("I wrote the first draft: \n\n" + response.poem)
-        return {"messages": [message], "poem": response.poem}
+        return {"messages": [message], "poem": response.poem, "iterations": iterations}
     # Improving poem by feedback
     else:
         # todoo poem story (or some history)
         prompt_template = PromptTemplate.from_template("Apply the feedback to the given poem. \n\n Feedback: {feedback}\n\n Poem:\n {poem}")
         prompt = prompt_template.invoke({"feedback": state["feedback"], "poem": state["poem"]})
         human: HumanMessage = HumanMessage(str(prompt))
-        response: WriterResponse = writer_structured_llm.invoke([system, human])
+        #response: WriterResponse = writer_structured_llm.invoke([system, human])
+        response: WriterResponse = writer_structured_llm.invoke([system] + state["messages"])
         message = AIMessage("I updated the poem according the feedback: \n\n" + response.poem)
-        return {"messages": [message], "poem": response.poem}
+        return {"messages": [message], "poem": response.poem, "iterations": iterations}

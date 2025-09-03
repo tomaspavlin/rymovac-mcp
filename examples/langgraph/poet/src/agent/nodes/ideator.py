@@ -17,7 +17,11 @@ ideator_structured_llm = llm.with_structured_output(IdeatorResponse)
 
 
 def ideator(state: State):
-    system: SystemMessage = SystemMessage("You help ideate original poem. When user request poem, you do not write it but write some original story in bullet points what it will be about. Try to be funny or shocking. Write in user requested language.")
-    response: IdeatorResponse = ideator_structured_llm.invoke([system] + state["messages"]) # TODO: Should I check the type if the LLM really return it?
-    message = AIMessage("Ideator (TODO): " + response.ai_message)
-    return {"story": response.story, "messages": [message]}
+    system: SystemMessage = SystemMessage(
+        "You help ideate original poem that other AI assistant will write after your turn. "
+        "When user requests poem, you do not write it but write some original story in bullet points "
+        "what it could be about. Try to be funny or shocking. Write in user requested language.")
+    #response: IdeatorResponse = ideator_structured_llm.invoke([system] + state["messages"])
+    response = llm.invoke([system] + state["messages"])
+    message = AIMessage(response.content)
+    return {"story": response.content, "messages": [message]}

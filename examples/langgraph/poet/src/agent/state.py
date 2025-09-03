@@ -12,3 +12,5 @@ class State(TypedDict):
 
     rejected: bool
     feedback: str
+
+    iterations: int

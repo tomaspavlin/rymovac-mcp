@@ -1,6 +1,6 @@
 from typing import Literal
 
-from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_core.prompts import PromptTemplate
 from langgraph.prebuilt import create_react_agent
 from pydantic import BaseModel, Field
@@ -46,7 +46,9 @@ async def rhymes_evaluator(state: State):
     # Convert this tool calling messages to structured output
     # TODO: different approach is possible: https://langchain-ai.github.io/langgraph/how-tos/react-agent-structured-output/
     # TODO: try only last messgege
-    response: EvaluatorResponse = await evaluator_structured_llm.ainvoke(subgraph_output["messages"])
+
+    system = SystemMessage("Rewrite the message in specified response format.")
+    response: EvaluatorResponse = await evaluator_structured_llm.ainvoke([system, subgraph_output["messages"][-1]])
 
     if response.grade == "ok":
         success_message = AIMessage(f"I checked that the poem rhymes.")
