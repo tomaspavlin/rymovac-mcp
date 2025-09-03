@@ -7,24 +7,34 @@ from agent.state import State
 
 
 class WriterResponse(BaseModel):
-    justification: str = Field(None, description="Summary what you wrote and why.")
+    # justification: str = Field(None, description="Summary what you wrote and why.")
     poem: str = Field(None, description="The resulting poem")
 
 writer_structured_llm = llm.with_structured_output(WriterResponse)
 
 
 def writer(state: State):
+    system: SystemMessage = SystemMessage(
+        "You are poem writing assistant that writes poems. "
+        "When you are told to write a poem or improve poem by the given feedback, "
+        "you will follow it and write short 4 line poem. "
+        "It should rhyme and be gramatically correct. "
+        "Write in user requested language.")
+
+    # When writing for the first time
     if not state.get("feedback"):
-        system: SystemMessage = SystemMessage("When you are given idea for a poem story, you will follow it and write short 4 line poem. It should rhyme. Write in user requested language.")
         human: HumanMessage = HumanMessage("Write poem about the following:\n " + state["story"])
         # poem = llm.invoke("Write poem about the following:\n " + state["story"])
         response: WriterResponse = writer_structured_llm.invoke([system, human])
-        return {"messages": [AIMessage("Wrote poem draft: " + response.justification)], "poem": response.poem}
+        # message = AIMessage("Wrote poem draft: " + response.justification)
+        message = AIMessage("I wrote the first draft: \n\n" + response.poem)
+        return {"messages": [message], "poem": response.poem}
+    # Improving poem by feedback
     else:
-        # system: SystemMessage = SystemMessage("When you are given idea for a poem story, you will follow it and write 4-8 line poem. Output only poem, nothing more.")
-        # human: HumanMessage = HumanMessage("Write poem about the following:\n " + state["story"])
-        # poem = llm.invoke("Write poem about the following:\n " + state["story"])
+        # todoo poem story (or some history)
         prompt_template = PromptTemplate.from_template("Apply the feedback to the given poem. \n\n Feedback: {feedback}\n\n Poem:\n {poem}")
         prompt = prompt_template.invoke({"feedback": state["feedback"], "poem": state["poem"]})
-        response: WriterResponse = writer_structured_llm.invoke(prompt)
-        return {"messages": [AIMessage("Applied feedback: " + response.justification)], "poem": response.poem}
+        human: HumanMessage = HumanMessage(str(prompt))
+        response: WriterResponse = writer_structured_llm.invoke([system, human])
+        message = AIMessage("I updated the poem according the feedback: \n\n" + response.poem)
+        return {"messages": [message], "poem": response.poem}

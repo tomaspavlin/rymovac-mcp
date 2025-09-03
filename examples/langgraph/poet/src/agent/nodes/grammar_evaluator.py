@@ -16,10 +16,10 @@ evaluator_structured_llm = llm.with_structured_output(EvaluatorResponse)
 
 
 def evaluator1(state: State):
-    response: EvaluatorResponse = evaluator_structured_llm.invoke("Evaluate if the following poem is gramatically correct, is clever and funny. And that it has 4 lines. Poem: \n" + state["poem"])
+    response: EvaluatorResponse = evaluator_structured_llm.invoke("Evaluate if the following poem is gramatically correct, is clever and funny. Give constructive feedback with what to improve. Do not write what is correct. Poem: \n\n" + state["poem"])
     if response.grade == "ok":
-        success_message = AIMessage(f"The resulting and evaluated poem: \n\n {state["poem"]}")
+        success_message = AIMessage(f"I checked that the grammar is correct.")
         return {"rejected": False, "feedback": response.feedback, "messages": [success_message]}
     else:
-        reject_message = AIMessage(f"I will apply this feedback: {response.feedback}")
+        reject_message = AIMessage(f"The grammar is not correct: {response.feedback}")
         return {"rejected": True, "feedback": response.feedback, "messages": [reject_message]}

@@ -36,7 +36,7 @@ rhyme_checker_agent = create_react_agent(llm, tools=rymovac_tools)
 
 
 async def rhymes_evaluator(state: State):
-    prompt_template = PromptTemplate.from_template("Evaluate if the given poem rhymes. Be informative, no bullshit, no verbose. If it does not rhyme, write what does not rhyme.  \n\n Poem:\n {poem}")
+    prompt_template = PromptTemplate.from_template("Evaluate if the given poem rhymes. Be informative, no bullshit, no verbose. If it does not rhyme, write what does not rhyme. Do not explicitly write if something rhymes. \n\n Poem:\n {poem}")
     prompt = await prompt_template.ainvoke({"poem": state["poem"]})
 
     # Call llm with tool calling
@@ -49,8 +49,8 @@ async def rhymes_evaluator(state: State):
     response: EvaluatorResponse = await evaluator_structured_llm.ainvoke(subgraph_output["messages"])
 
     if response.grade == "ok":
-        success_message = AIMessage(f"The poem rhymes.")
+        success_message = AIMessage(f"I checked that the poem rhymes.")
         return {"rejected": False, "feedback": response.feedback, "messages": [success_message]}
     else:
-        reject_message = AIMessage(f"The poem does not rhyme. I will apply this feedback: {response.feedback}")
+        reject_message = AIMessage(f"{response.feedback}")
         return {"rejected": True, "feedback": response.feedback, "messages": [reject_message]}
