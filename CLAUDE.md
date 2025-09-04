@@ -33,3 +33,23 @@ The project uses these endpoints:
     ```json
     {"precision":4,"is_rhyme":true,"log":{"full_time":0.123}}
     ```
+
+## Examples
+
+### LangGraph Poetry System
+
+Located in `examples/langgraph/poet/`, this is a poetry generation and evaluation system built with LangGraph that demonstrates usage of the rymovac MCP server.
+
+**Workflow:**
+1. **Ideator** (`src/agent/nodes/ideator.py`) - Creates story ideas/themes for poems in bullet points
+2. **Writer** (`src/agent/nodes/writer.py`) - Writes 4-line poems based on the story, or improves them based on feedback
+3. **Grammar Evaluator** (`src/agent/nodes/grammar_evaluator.py`) - Checks grammar correctness
+4. **Rhymes Evaluator** (`src/agent/nodes/rhymes_evaluator.py`) - Verifies if the poem rhymes using rymovac tools
+5. **Summarizer** (`src/agent/nodes/summarizer.py`) - Provides final summary
+
+**Graph flow:**
+- START → Ideator → Writer → Grammar Evaluator
+- If rejected: loops back to Writer (max 5 iterations via `MAX_ITERATIONS`)
+- If accepted: proceeds to Rhymes Evaluator
+- If rhymes rejected: loops back to Writer
+- If rhymes accepted: goes to Summarizer → END
