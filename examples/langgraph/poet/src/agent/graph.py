@@ -1,6 +1,6 @@
 from langgraph.graph import StateGraph, START, END
 
-from agent.nodes.grammar_evaluator import evaluator1
+from agent.nodes.grammar_evaluator import grammar_evaluator
 from agent.nodes.ideator import ideator
 from agent.nodes.rhymes_evaluator import rhymes_evaluator
 from agent.nodes.summarizer import summarizer
@@ -8,7 +8,7 @@ from agent.nodes.writer import writer
 from agent.state import State
 
 
-MAX_ITERATIONS = 5
+MAX_ITERATIONS = 10
 
 async def make_graph():
 
@@ -26,7 +26,7 @@ async def make_graph():
 
     graph_builder.add_node("ideator", ideator)
     graph_builder.add_node("writer", writer)
-    graph_builder.add_node("evaluator1", evaluator1)
+    graph_builder.add_node("grammar_evaluator", grammar_evaluator)
     graph_builder.add_node("rhymes_evaluator", rhymes_evaluator)
     graph_builder.add_node("summarizer", summarizer)
 
@@ -34,8 +34,8 @@ async def make_graph():
     graph_builder.add_edge(START, "ideator")
     graph_builder.add_edge("ideator", "writer")
 
-    graph_builder.add_edge("writer", "evaluator1")
-    graph_builder.add_conditional_edges("evaluator1", route_evaluation, {
+    graph_builder.add_edge("writer", "grammar_evaluator")
+    graph_builder.add_conditional_edges("grammar_evaluator", route_evaluation, {
         "rejected": "writer",
         "accepted": "rhymes_evaluator"
     })
