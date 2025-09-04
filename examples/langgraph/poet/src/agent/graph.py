@@ -15,7 +15,7 @@ async def make_graph():
     graph_builder = StateGraph(State)
 
     def route_evaluation(state: State):
-        if state["iterations"] >= MAX_ITERATIONS:
+        if state.get("iterations") >= MAX_ITERATIONS:
             return "accepted" # TODO: return other states
 
         if state["rejected"]:

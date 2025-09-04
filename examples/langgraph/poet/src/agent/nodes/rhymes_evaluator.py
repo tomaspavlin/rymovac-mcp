@@ -36,7 +36,7 @@ rhyme_checker_agent = create_react_agent(llm, tools=rymovac_tools)
 
 
 async def rhymes_evaluator(state: State):
-    prompt_template = PromptTemplate.from_template("Evaluate if the given poem rhymes. Be informative, no bullshit, no verbose. If it does not rhyme, write what does not rhyme. Do not explicitly write if something rhymes. \n\n Poem:\n {poem}")
+    prompt_template = PromptTemplate.from_template("Evaluate if the given poem rhymes. First, understand, what rhyming scheme is used. Be informative, no bullshit, no verbose. If it does not rhyme, write what does not rhyme. Do not explicitly write if something rhymes. \n\n Poem:\n {poem}")
     prompt = await prompt_template.ainvoke({"poem": state["poem"]})
 
     # Call llm with tool calling
